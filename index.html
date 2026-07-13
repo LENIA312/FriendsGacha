@@ -11,6 +11,7 @@
 <header class="app-header">
   <h1 class="app-title">みんなのイラストガチャ</h1>
   <div class="mame-badge" id="mameBadge">🫘 0</div>
+  <button class="help-btn" id="helpBtn" aria-label="遊び方" title="遊び方">？</button>
   <nav class="app-nav">
     <button class="nav-tab active" data-view="gacha-view">ガチャ</button>
     <button class="nav-tab" data-view="mame-view">マメ工房</button>
@@ -82,6 +83,27 @@
       <p class="modal-author" id="modalAuthor"></p>
       <p class="modal-flavor" id="modalFlavor"></p>
       <p class="modal-owned-count" id="modalOwnedCount"></p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="howToPlayModal">
+  <div class="modal-card howto-card">
+    <button class="modal-close" id="howToPlayClose">×</button>
+    <div class="modal-body">
+      <h3 class="modal-name">遊び方</h3>
+      <div class="howto-section">
+        <h4>🎴 ガチャを引く</h4>
+        <p>マメを消費してガチャを引いて、みんなのイラストを集めよう。</p>
+      </div>
+      <div class="howto-section">
+        <h4>🫘 マメの製造</h4>
+        <p>「マメ工房」タブでは時間経過で自動的にマメが貯まる。タップすると生産を早められて、アップグレードでもっと効率よく貯められるようになる。</p>
+      </div>
+      <div class="howto-section">
+        <h4>📚 コレクション</h4>
+        <p>集めたイラストは「コレクション」タブでいつでも見返せる。</p>
+      </div>
     </div>
   </div>
 </div>

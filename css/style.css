@@ -119,6 +119,27 @@ button {
   white-space: nowrap;
 }
 
+.help-btn {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-dim);
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.15s ease;
+}
+
+.help-btn:hover {
+  color: var(--text);
+  border-color: var(--accent-2);
+}
+
 .nav-admin-link {
   font-size: 0.8rem;
   color: var(--text-dim);
@@ -911,6 +932,35 @@ body.fx-reduced-motion * {
 .modal-owned-count {
   margin-top: 12px;
   font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.howto-card .modal-name {
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+}
+
+.howto-section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.howto-section:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 4px;
+}
+
+.howto-section h4 {
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+}
+
+.howto-section p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
   color: var(--text-dim);
 }
 

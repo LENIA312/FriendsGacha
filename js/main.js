@@ -41,6 +41,29 @@
     els.modal.classList.add('hidden');
   }
 
+  function openHowToPlay() {
+    els.howToModal.classList.remove('hidden');
+  }
+
+  function closeHowToPlay() {
+    els.howToModal.classList.add('hidden');
+  }
+
+  async function initHowToPlay() {
+    els.howToModal = document.getElementById('howToPlayModal');
+    document.getElementById('helpBtn').addEventListener('click', openHowToPlay);
+    document.getElementById('howToPlayClose').addEventListener('click', closeHowToPlay);
+    els.howToModal.addEventListener('click', (e) => {
+      if (e.target === els.howToModal) closeHowToPlay();
+    });
+
+    const seen = await GachaDB.SettingsStore.get('howToPlaySeen');
+    if (!seen) {
+      openHowToPlay();
+      await GachaDB.SettingsStore.put('howToPlaySeen', true);
+    }
+  }
+
   let collectionRefreshTimer = null;
   function refreshCollectionSoon() {
     clearTimeout(collectionRefreshTimer);
@@ -66,6 +89,8 @@
     document.querySelectorAll('.nav-tab').forEach((tab) => {
       tab.addEventListener('click', () => switchView(tab.dataset.view));
     });
+
+    await initHowToPlay();
 
     try {
       await GachaMame.init();
