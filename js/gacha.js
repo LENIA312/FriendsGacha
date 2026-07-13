@@ -30,7 +30,8 @@
 
   function setDrawButtonsVisible(visible) {
     els.drawOneBtn.classList.toggle('hidden', !visible);
-    els.drawTenBtn.classList.toggle('hidden', !visible);
+    // 10連は一旦導線を非表示にしているため、常にhiddenのまま(ロジックは維持)
+    // els.drawTenBtn.classList.toggle('hidden', !visible);
   }
 
   function resetStage() {

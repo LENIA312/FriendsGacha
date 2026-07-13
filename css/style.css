@@ -53,8 +53,10 @@ button {
 
 .app-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   padding: 18px 24px;
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(6px);
@@ -69,6 +71,7 @@ button {
   font-weight: 800;
   letter-spacing: 0.04em;
   margin: 0;
+  white-space: nowrap;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text;
   background-clip: text;
@@ -79,6 +82,7 @@ button {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .nav-tab {
@@ -89,6 +93,7 @@ button {
   border-radius: 999px;
   font-weight: 600;
   font-size: 0.9rem;
+  white-space: nowrap;
   transition: 0.15s ease;
 }
 
@@ -180,6 +185,8 @@ main {
   position: absolute;
   inset: 0;
   z-index: 2;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
   pointer-events: none;
   transition: opacity 0.2s ease;
 }
@@ -366,7 +373,7 @@ main {
 .seal-card-image {
   flex: 1;
   background-color: #fff;
-  background-size: contain;
+  background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
@@ -598,7 +605,7 @@ main {
   position: absolute;
   inset: 0;
   background-color: #fff;
-  background-size: contain;
+  background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -703,7 +710,7 @@ main {
   width: 100%;
   aspect-ratio: 1 / 1;
   background-color: #fff;
-  background-size: contain;
+  background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center;
 }

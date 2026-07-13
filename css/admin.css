@@ -93,7 +93,7 @@
   height: 120px;
   border-radius: var(--radius-sm);
   border: 1px dashed var(--border);
-  background-size: contain;
+  background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center;
   display: flex;
@@ -135,7 +135,7 @@
   height: 52px;
   border-radius: 8px;
   background-color: #fff;
-  background-size: contain;
+  background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: center;
   flex-shrink: 0;
