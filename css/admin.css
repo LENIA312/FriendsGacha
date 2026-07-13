@@ -93,7 +93,8 @@
   height: 120px;
   border-radius: var(--radius-sm);
   border: 1px dashed var(--border);
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
   background-position: center;
   display: flex;
   align-items: center;
@@ -101,6 +102,10 @@
   color: var(--text-dim);
   font-size: 0.7rem;
   text-align: center;
+}
+
+.image-preview.has-image {
+  background-color: #fff;
 }
 
 .form-actions {
@@ -129,7 +134,9 @@
   width: 52px;
   height: 52px;
   border-radius: 8px;
-  background-size: cover;
+  background-color: #fff;
+  background-size: contain;
+  background-repeat: no-repeat;
   background-position: center;
   flex-shrink: 0;
 }

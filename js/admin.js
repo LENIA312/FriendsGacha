@@ -33,6 +33,7 @@
     els.form.reset();
     els.itemId.value = '';
     els.imagePreview.style.backgroundImage = 'none';
+    els.imagePreview.classList.remove('has-image');
     els.imagePreview.textContent = 'プレビュー';
     els.formHeading.textContent = '新しいイラストを追加';
     els.submitBtn.textContent = '追加する';
@@ -86,6 +87,7 @@
     els.author.value = item.author || '';
     els.flavor.value = item.flavorText || '';
     els.imagePreview.style.backgroundImage = `url('${item.image}')`;
+    els.imagePreview.classList.add('has-image');
     els.imagePreview.textContent = '';
     els.imageInput.value = '';
     els.formHeading.textContent = `「${item.name}」を編集中`;
@@ -143,6 +145,7 @@
     if (!file) return;
     selectedImageDataUrl = await fileToDataUrl(file);
     els.imagePreview.style.backgroundImage = `url('${selectedImageDataUrl}')`;
+    els.imagePreview.classList.add('has-image');
     els.imagePreview.textContent = '';
   }
 
