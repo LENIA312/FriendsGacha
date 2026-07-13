@@ -108,6 +108,17 @@ button {
   border-color: transparent;
 }
 
+.mame-badge {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
 .nav-admin-link {
   font-size: 0.8rem;
   color: var(--text-dim);
@@ -553,6 +564,132 @@ body.fx-reduced-motion * {
 
 .btn.hidden {
   display: none;
+}
+
+/* ---------- Mame workshop ---------- */
+
+.mame-workshop {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.production-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.production-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  transition: transform 0.1s ease;
+}
+
+.production-line:active {
+  transform: scale(0.98);
+}
+
+.production-bar-track {
+  flex: 1;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.production-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.12s linear;
+}
+
+.production-line-label {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.upgrade-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.upgrade-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  text-align: center;
+}
+
+.upgrade-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.upgrade-level {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.upgrade-cost {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+}
+
+.upgrade-card button {
+  margin-top: 4px;
+  padding: 8px 18px;
+  font-size: 0.82rem;
+}
+
+.mame-toast-host {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.mame-toast {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #1a1226;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 8px 18px;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(255, 122, 198, 0.35);
+  animation: mame-toast-pop 1.4s ease forwards;
+}
+
+@keyframes mame-toast-pop {
+  0% { opacity: 0; transform: translateY(8px) scale(0.8); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-14px) scale(0.9); }
 }
 
 /* ---------- Collection ---------- */

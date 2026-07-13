@@ -9,6 +9,8 @@
     skip: false,
   };
 
+  const DRAW_COST = { 1: 5, 10: 50 };
+
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, state.skip ? Math.min(ms, 16) : ms));
   }
@@ -30,8 +32,17 @@
 
   function setDrawButtonsVisible(visible) {
     els.drawOneBtn.classList.toggle('hidden', !visible);
-    // 10連は一旦導線を非表示にしているため、常にhiddenのまま(ロジックは維持)
-    // els.drawTenBtn.classList.toggle('hidden', !visible);
+    els.drawTenBtn.classList.toggle('hidden', !visible);
+  }
+
+  function refreshDrawButtons() {
+    if (!els.drawOneBtn) return;
+    els.drawOneBtn.textContent = `引く (🫘${DRAW_COST[1]})`;
+    els.drawTenBtn.textContent = `10連引く (🫘${DRAW_COST[10]})`;
+    if (state.busy) return;
+    const balance = global.GachaMame ? global.GachaMame.getBalance() : Infinity;
+    els.drawOneBtn.disabled = balance < DRAW_COST[1];
+    els.drawTenBtn.disabled = balance < DRAW_COST[10];
   }
 
   function resetStage() {
@@ -59,6 +70,11 @@
     }
     if (catalog.length === 0) {
       alert('まだアイテムが登録されていません。data/items.json にアイテムを追加してください。');
+      return;
+    }
+    const cost = DRAW_COST[count];
+    if (!global.GachaMame || !global.GachaMame.spend(cost)) {
+      alert('マメが足りません。マメ工房で貯めよう。');
       return;
     }
     state.busy = true;
@@ -147,6 +163,7 @@
     els.resetDrawBtn.classList.remove('hidden');
     els.hint.textContent = 'カードをタップすると詳細が見られます';
     state.busy = false;
+    refreshDrawButtons();
     if (global.GachaMain) global.GachaMain.refreshCollectionSoon();
   }
 
@@ -171,7 +188,8 @@
     els.resetDrawBtn.addEventListener('click', resetStage);
 
     resetStage();
+    refreshDrawButtons();
   }
 
-  global.GachaPlay = { initGacha };
+  global.GachaPlay = { initGacha, refreshDrawButtons };
 })(window);

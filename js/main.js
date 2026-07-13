@@ -67,6 +67,7 @@
       tab.addEventListener('click', () => switchView(tab.dataset.view));
     });
 
+    await GachaMame.init();
     GachaPlay.initGacha();
     GachaCollection.initCollection();
     await GachaCollection.render();
