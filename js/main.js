@@ -49,7 +49,7 @@
     els.howToModal.classList.add('hidden');
   }
 
-  async function initHowToPlay() {
+  async function initHowToPlay(hadSeenBefore) {
     els.howToModal = document.getElementById('howToPlayModal');
     document.getElementById('helpBtn').addEventListener('click', openHowToPlay);
     document.getElementById('howToPlayClose').addEventListener('click', closeHowToPlay);
@@ -57,10 +57,45 @@
       if (e.target === els.howToModal) closeHowToPlay();
     });
 
-    const seen = await GachaDB.SettingsStore.get('howToPlaySeen');
-    if (!seen) {
+    if (!hadSeenBefore) {
       openHowToPlay();
       await GachaDB.SettingsStore.put('howToPlaySeen', true);
+    }
+  }
+
+  function initNewItemsModal() {
+    els.newItemsModal = document.getElementById('newItemsModal');
+    document.getElementById('newItemsClose').addEventListener('click', () => {
+      els.newItemsModal.classList.add('hidden');
+    });
+    els.newItemsModal.addEventListener('click', (e) => {
+      if (e.target === els.newItemsModal) els.newItemsModal.classList.add('hidden');
+    });
+  }
+
+  // Notifies returning players when the published catalog (data/items.json) has grown since
+  // their last visit. First-time visitors are shown the how-to-play tutorial instead, and the
+  // very first time this check ever runs on a browser there's no prior baseline to diff against
+  // (so it just records one silently rather than claiming the whole catalog is "new").
+  async function checkNewItems(hadSeenTutorial) {
+    let catalog;
+    try {
+      catalog = await GachaCatalog.loadCatalog();
+    } catch (err) {
+      return;
+    }
+    const currentIds = catalog.map((item) => item.id);
+    const knownIds = await GachaDB.SettingsStore.get('knownItemIds');
+    if (!Array.isArray(knownIds)) {
+      await GachaDB.SettingsStore.put('knownItemIds', currentIds);
+      return;
+    }
+    const hasNewItem = currentIds.some((id) => !knownIds.includes(id));
+    if (hasNewItem) {
+      await GachaDB.SettingsStore.put('knownItemIds', currentIds);
+      if (hadSeenTutorial) {
+        els.newItemsModal.classList.remove('hidden');
+      }
     }
   }
 
@@ -90,7 +125,9 @@
       tab.addEventListener('click', () => switchView(tab.dataset.view));
     });
 
-    await initHowToPlay();
+    const hadSeenTutorial = !!(await GachaDB.SettingsStore.get('howToPlaySeen'));
+    await initHowToPlay(hadSeenTutorial);
+    initNewItemsModal();
 
     try {
       await GachaMame.init();
@@ -100,6 +137,7 @@
     GachaPlay.initGacha();
     GachaCollection.initCollection();
     await GachaCollection.render();
+    await checkNewItems(hadSeenTutorial);
   }
 
   global.GachaMain = { openItemModal, refreshCollectionSoon };
