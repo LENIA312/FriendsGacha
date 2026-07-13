@@ -25,7 +25,10 @@
       "Bash(node verify_footer2.js)",
       "Bash(py -m http.server 8937)",
       "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8937/index.html >/dev/null; do sleep 1; done')",
-      "Bash(node verify_newitems.js)"
+      "Bash(node verify_newitems.js)",
+      "Bash(py -m http.server 8938)",
+      "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8938/index.html >/dev/null; do sleep 1; done')",
+      "Bash(node verify_presents.js)"
     ]
   }
 }

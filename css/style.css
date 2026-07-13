@@ -68,6 +68,21 @@ button {
   background: rgba(18, 10, 32, 0.6);
 }
 
+.app-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-presents {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
 .app-title {
   font-size: 1.3rem;
   font-weight: 800;
