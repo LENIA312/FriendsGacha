@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シールガチャ</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <h1 class="app-title">✦ シールガチャ</h1>
+  <nav class="app-nav">
+    <button class="nav-tab active" data-view="gacha-view">ガチャ</button>
+    <button class="nav-tab" data-view="collection-view">コレクション</button>
+  </nav>
+</header>
+
+<main>
+
+  <section id="gacha-view" class="view active">
+    <p class="gacha-hint">パックをタップして開封しよう</p>
+
+    <div class="gacha-stage">
+      <div class="pack" id="pack">
+        <div class="pack-content">
+          <div class="pack-shine"></div>
+          <div class="pack-star">✦</div>
+          <p class="pack-label">TAP TO OPEN</p>
+        </div>
+        <div class="pack-half pack-left"></div>
+        <div class="pack-half pack-right"></div>
+      </div>
+      <div class="burst" id="burst"></div>
+      <div class="cards-area hidden" id="cardsArea"></div>
+    </div>
+
+    <div class="gacha-controls">
+      <button class="btn" id="drawOneBtn">1回引く</button>
+      <button class="btn secondary" id="drawTenBtn">10連引く</button>
+      <button class="btn secondary hidden" id="skipBtn">スキップ</button>
+      <button class="btn hidden" id="resetDrawBtn">もう一度引く</button>
+    </div>
+  </section>
+
+  <section id="collection-view" class="view">
+    <div class="collection-header">
+      <div class="collection-stats">
+        コレクション達成率: <strong id="collectionProgress">0 / 0</strong>
+      </div>
+      <div class="collection-filters" id="collectionFilters">
+        <button class="filter-btn active" data-filter="ALL">ALL</button>
+        <button class="filter-btn" data-filter="N">N</button>
+        <button class="filter-btn" data-filter="R">R</button>
+        <button class="filter-btn" data-filter="SR">SR</button>
+        <button class="filter-btn" data-filter="SSR">SSR</button>
+      </div>
+    </div>
+    <div class="collection-grid" id="collectionGrid"></div>
+  </section>
+
+</main>
+
+<div class="modal-overlay hidden" id="itemModal">
+  <div class="modal-card" id="modalCard">
+    <button class="modal-close" id="modalClose">×</button>
+    <div class="modal-image" id="modalImage"></div>
+    <div class="modal-body">
+      <span class="modal-rarity-badge" id="modalRarityBadge"></span>
+      <h3 class="modal-name" id="modalName"></h3>
+      <p class="modal-author" id="modalAuthor"></p>
+      <p class="modal-flavor" id="modalFlavor"></p>
+      <p class="modal-owned-count" id="modalOwnedCount"></p>
+    </div>
+  </div>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/rarity.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/gacha.js"></script>
+<script src="js/collection.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

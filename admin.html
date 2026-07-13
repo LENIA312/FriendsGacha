@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シールガチャ - 管理画面</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<header class="app-header">
+  <h1 class="app-title">⚙ ガチャ管理</h1>
+  <nav class="app-nav">
+    <a class="nav-admin-link" href="index.html">← ガチャに戻る</a>
+  </nav>
+</header>
+
+<main class="admin-main">
+
+  <section class="admin-panel">
+    <h2 class="admin-heading" id="formHeading">新しいイラストを追加</h2>
+    <form id="itemForm" class="item-form">
+      <input type="hidden" id="itemId">
+
+      <div class="form-row">
+        <label for="fieldName">名前<span class="req">*</span></label>
+        <input type="text" id="fieldName" maxlength="40" required placeholder="例）花霞の狐">
+      </div>
+
+      <div class="form-row">
+        <label for="fieldRarity">レアリティ<span class="req">*</span></label>
+        <select id="fieldRarity" required></select>
+      </div>
+
+      <div class="form-row">
+        <label for="fieldAuthor">作者名</label>
+        <input type="text" id="fieldAuthor" maxlength="40" placeholder="例）サンプル作家C">
+      </div>
+
+      <div class="form-row">
+        <label for="fieldFlavor">フレーバーテキスト</label>
+        <textarea id="fieldFlavor" rows="3" maxlength="200" placeholder="このイラストにまつわる短い説明文"></textarea>
+      </div>
+
+      <div class="form-row">
+        <label for="fieldImage">イラスト画像<span class="req">*</span></label>
+        <input type="file" id="fieldImage" accept="image/*">
+        <p class="field-hint">正方形に近い画像がきれいに表示されます。編集時は未選択なら元の画像を維持します。</p>
+        <div class="image-preview" id="imagePreview"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn" id="submitBtn">追加する</button>
+        <button type="button" class="btn secondary hidden" id="cancelEditBtn">編集をキャンセル</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="admin-panel">
+    <div class="admin-panel-header">
+      <h2 class="admin-heading">登録済みイラスト一覧</h2>
+      <span class="item-count" id="itemCount"></span>
+    </div>
+    <div class="item-list" id="itemList"></div>
+  </section>
+
+  <section class="admin-panel">
+    <h2 class="admin-heading">データ管理</h2>
+    <p class="field-hint">
+      ここでの編集はこのブラウザ内(IndexedDB)にのみ保存され、公開サイトには自動反映されません。<br>
+      公開サイトに反映するには、①「カタログを書き出す」で <code>items.json</code> をダウンロード →
+      ②リポジトリの <code>data/items.json</code> を上書き → ③ commit &amp; push、という手順が必要です。<br>
+      次回この管理画面を開いたとき、初回に限り公開中の <code>data/items.json</code> を自動で読み込みます。
+    </p>
+    <div class="data-actions">
+      <button class="btn secondary" id="exportBtn">カタログを書き出す (items.json)</button>
+      <label class="btn secondary file-btn">
+        カタログを読み込む (JSON)
+        <input type="file" id="importInput" accept="application/json" hidden>
+      </label>
+      <button class="btn secondary danger" id="resetCollectionBtn">所持データ(コレクション)をリセット</button>
+    </div>
+  </section>
+
+</main>
+
+<script src="js/db.js"></script>
+<script src="js/rarity.js"></script>
+<script src="js/catalog.js"></script>
+<script src="js/seedData.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
