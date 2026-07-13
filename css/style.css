@@ -964,6 +964,22 @@ body.fx-reduced-motion * {
   color: var(--text-dim);
 }
 
+/* ---------- Footer ---------- */
+
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 16px 20px 28px;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.72rem;
+}
+
 .empty-state {
   text-align: center;
   color: var(--text-dim);

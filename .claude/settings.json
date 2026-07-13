@@ -12,7 +12,13 @@
       "Bash(py -m http.server 8934)",
       "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8934/index.html >/dev/null; do sleep 1; done')",
       "Bash(node verify_redraw.js)",
-      "Bash(node verify_howto.js)"
+      "Bash(node verify_howto.js)",
+      "Bash(py -m http.server 8935)",
+      "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8935/index.html >/dev/null; do sleep 1; done')",
+      "Bash(node verify_footer.js)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
