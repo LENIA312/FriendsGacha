@@ -38,6 +38,8 @@ body {
     radial-gradient(circle at 85% 0%, rgba(122, 215, 255, 0.16), transparent 40%),
     linear-gradient(160deg, var(--bg-0), var(--bg-1) 55%, var(--bg-2));
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -156,6 +158,8 @@ button {
 }
 
 main {
+  flex: 1 0 auto;
+  width: 100%;
   max-width: 1080px;
   margin: 0 auto;
   padding: 28px 20px 80px;
@@ -967,6 +971,7 @@ body.fx-reduced-motion * {
 /* ---------- Footer ---------- */
 
 .app-footer {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
