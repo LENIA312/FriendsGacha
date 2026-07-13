@@ -1,0 +1,19 @@
+{
+  "accent": "#ff7ac6",
+  "accent2": "#7ad7ff",
+  "bg0": "#120a20",
+  "bg1": "#1d1236",
+  "bg2": "#2a1a45",
+  "rarity": {
+    "N": "#9aa0a6",
+    "R": "#4fc3f7",
+    "SR": "#c084fc",
+    "SSR": "#ffd54f"
+  },
+  "effects": {
+    "packShine": true,
+    "burstFlash": true,
+    "ssrHolo": true,
+    "reducedMotion": false
+  }
+}

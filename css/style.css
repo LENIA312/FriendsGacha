@@ -490,6 +490,28 @@ main {
   100% { transform: rotate(360deg) scale(1); opacity: 0.6; }
 }
 
+/* ---------- Effect toggles (admin "見た目のカスタマイズ") ---------- */
+
+body.fx-pack-shine-off .pack-shine {
+  display: none;
+}
+
+body.fx-burst-off .burst {
+  display: none;
+}
+
+body.fx-holo-off .seal-card.revealed.fx-holo .seal-card-image::before,
+body.fx-holo-off .seal-card.revealed.fx-holo::after {
+  display: none;
+}
+
+body.fx-reduced-motion,
+body.fx-reduced-motion * {
+  animation-duration: 0.001s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0.001s !important;
+}
+
 /* ---------- Controls ---------- */
 
 .gacha-controls {

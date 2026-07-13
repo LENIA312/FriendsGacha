@@ -48,6 +48,8 @@
   }
 
   async function bootstrap() {
+    await GachaTheme.initPublished();
+
     els.modal = document.getElementById('itemModal');
     els.modalCard = document.getElementById('modalCard');
     els.modalImage = document.getElementById('modalImage');

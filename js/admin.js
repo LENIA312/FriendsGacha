@@ -149,17 +149,21 @@
     els.imagePreview.textContent = '';
   }
 
-  async function handleExport() {
-    const items = await GachaDB.ItemsStore.all();
-    const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+  function downloadJson(filename, data) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'items.json';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  }
+
+  async function handleExport() {
+    const items = await GachaDB.ItemsStore.all();
+    downloadJson('items.json', items);
   }
 
   async function ensureInitialData() {
@@ -195,6 +199,125 @@
     } finally {
       e.target.value = '';
     }
+  }
+
+  function readThemeForm() {
+    return {
+      accent: els.themeAccent.value,
+      accent2: els.themeAccent2.value,
+      bg0: els.themeBg0.value,
+      bg1: els.themeBg1.value,
+      bg2: els.themeBg2.value,
+      rarity: {
+        N: els.themeRarityN.value,
+        R: els.themeRarityR.value,
+        SR: els.themeRaritySR.value,
+        SSR: els.themeRaritySSR.value,
+      },
+      effects: {
+        packShine: els.themeFxPackShine.checked,
+        burstFlash: els.themeFxBurst.checked,
+        ssrHolo: els.themeFxHolo.checked,
+        reducedMotion: els.themeFxReducedMotion.checked,
+      },
+    };
+  }
+
+  function populateThemeForm(theme) {
+    els.themeAccent.value = theme.accent;
+    els.themeAccent2.value = theme.accent2;
+    els.themeBg0.value = theme.bg0;
+    els.themeBg1.value = theme.bg1;
+    els.themeBg2.value = theme.bg2;
+    els.themeRarityN.value = theme.rarity.N;
+    els.themeRarityR.value = theme.rarity.R;
+    els.themeRaritySR.value = theme.rarity.SR;
+    els.themeRaritySSR.value = theme.rarity.SSR;
+    els.themeFxPackShine.checked = theme.effects.packShine;
+    els.themeFxBurst.checked = theme.effects.burstFlash;
+    els.themeFxHolo.checked = theme.effects.ssrHolo;
+    els.themeFxReducedMotion.checked = theme.effects.reducedMotion;
+  }
+
+  async function renderPreviewCard() {
+    const key = els.themePreviewRarity.value;
+    const rarity = GachaRarity.info(key);
+    els.themePreviewCard.className = `seal-card enter revealed flipped fx-${rarity.glow}`;
+    els.themePreviewCard.style.setProperty('--rc', rarity.color);
+    els.themePreviewBadge.textContent = rarity.key;
+
+    const items = await GachaDB.ItemsStore.all();
+    const sample = items.find((it) => it.rarity === key) || items[0];
+    els.themePreviewImage.style.backgroundImage = sample ? `url('${sample.image}')` : 'none';
+  }
+
+  function applyThemePreview() {
+    GachaTheme.applyTheme(readThemeForm());
+    renderPreviewCard();
+  }
+
+  function playPreviewEffects() {
+    els.themePreviewBurst.classList.remove('play');
+    void els.themePreviewBurst.offsetWidth; // restart animation
+    els.themePreviewBurst.classList.add('play');
+    els.themePreviewCard.classList.remove('revealed');
+    void els.themePreviewCard.offsetWidth;
+    els.themePreviewCard.classList.add('revealed');
+  }
+
+  async function initThemePanel() {
+    els.themeAccent = document.getElementById('themeAccent');
+    els.themeAccent2 = document.getElementById('themeAccent2');
+    els.themeBg0 = document.getElementById('themeBg0');
+    els.themeBg1 = document.getElementById('themeBg1');
+    els.themeBg2 = document.getElementById('themeBg2');
+    els.themeRarityN = document.getElementById('themeRarityN');
+    els.themeRarityR = document.getElementById('themeRarityR');
+    els.themeRaritySR = document.getElementById('themeRaritySR');
+    els.themeRaritySSR = document.getElementById('themeRaritySSR');
+    els.themeFxPackShine = document.getElementById('themeFxPackShine');
+    els.themeFxBurst = document.getElementById('themeFxBurst');
+    els.themeFxHolo = document.getElementById('themeFxHolo');
+    els.themeFxReducedMotion = document.getElementById('themeFxReducedMotion');
+    els.themePreviewRarity = document.getElementById('themePreviewRarity');
+    els.themePreviewCard = document.getElementById('themePreviewCard');
+    els.themePreviewImage = document.getElementById('themePreviewImage');
+    els.themePreviewBadge = document.getElementById('themePreviewBadge');
+    els.themePreviewBurst = document.getElementById('themePreviewBurst');
+    els.themePreviewPlayBtn = document.getElementById('themePreviewPlayBtn');
+    els.themeSaveBtn = document.getElementById('themeSaveBtn');
+    els.themeResetBtn = document.getElementById('themeResetBtn');
+    els.themeExportBtn = document.getElementById('themeExportBtn');
+
+    els.themePreviewRarity.innerHTML = GachaRarity.RARITY_ORDER
+      .map((key) => `<option value="${key}">${key} - ${GachaRarity.RARITY[key].name}</option>`)
+      .join('');
+    els.themePreviewRarity.value = 'SSR';
+
+    const saved = await GachaDB.SettingsStore.get('theme');
+    const initial = saved ? GachaTheme.mergeWithDefaults(saved) : await GachaTheme.loadPublishedTheme();
+    populateThemeForm(initial);
+    applyThemePreview();
+
+    const panel = document.getElementById('themePreview').closest('.admin-panel');
+    panel.addEventListener('input', (e) => {
+      if (e.target.closest('.theme-color-grid, .theme-toggle-list')) applyThemePreview();
+    });
+    els.themePreviewRarity.addEventListener('change', renderPreviewCard);
+    els.themePreviewPlayBtn.addEventListener('click', playPreviewEffects);
+
+    els.themeSaveBtn.addEventListener('click', async () => {
+      await GachaDB.SettingsStore.put('theme', readThemeForm());
+      alert('見た目の設定を保存しました(このブラウザ内のみ反映)。公開サイトに反映するには書き出しが必要です。');
+    });
+    els.themeResetBtn.addEventListener('click', () => {
+      if (!confirm('見た目の設定をデフォルトに戻します。よろしいですか？')) return;
+      populateThemeForm(GachaTheme.DEFAULT_THEME);
+      applyThemePreview();
+    });
+    els.themeExportBtn.addEventListener('click', () => {
+      downloadJson('theme.json', readThemeForm());
+    });
   }
 
   async function handleResetCollection() {
@@ -241,6 +364,7 @@
     bindEvents();
     await ensureInitialData();
     await renderList();
+    await initThemePanel();
   }
 
   document.addEventListener('DOMContentLoaded', init);

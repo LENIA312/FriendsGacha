@@ -66,6 +66,69 @@
   </section>
 
   <section class="admin-panel">
+    <h2 class="admin-heading">見た目のカスタマイズ</h2>
+    <p class="field-hint">
+      ここでの編集はこのブラウザ内(IndexedDB)にのみ保存され、下のプレビューにだけ反映されます。<br>
+      公開サイトに反映するには、①「テーマを書き出す」で <code>theme.json</code> をダウンロード →
+      ②リポジトリの <code>data/theme.json</code> を上書き → ③ commit &amp; push、という手順が必要です。
+    </p>
+
+    <h3 class="theme-subheading">カラー</h3>
+    <div class="theme-color-grid">
+      <label class="theme-color-row">アクセントカラー1<input type="color" id="themeAccent"></label>
+      <label class="theme-color-row">アクセントカラー2<input type="color" id="themeAccent2"></label>
+      <label class="theme-color-row">背景色(上)<input type="color" id="themeBg0"></label>
+      <label class="theme-color-row">背景色(中)<input type="color" id="themeBg1"></label>
+      <label class="theme-color-row">背景色(下)<input type="color" id="themeBg2"></label>
+      <label class="theme-color-row">レアリティ N<input type="color" id="themeRarityN"></label>
+      <label class="theme-color-row">レアリティ R<input type="color" id="themeRarityR"></label>
+      <label class="theme-color-row">レアリティ SR<input type="color" id="themeRaritySR"></label>
+      <label class="theme-color-row">レアリティ SSR<input type="color" id="themeRaritySSR"></label>
+    </div>
+
+    <h3 class="theme-subheading">演出</h3>
+    <div class="theme-toggle-list">
+      <label class="theme-toggle-row"><input type="checkbox" id="themeFxPackShine">パックの光沢演出</label>
+      <label class="theme-toggle-row"><input type="checkbox" id="themeFxBurst">排出時のバーストフラッシュ</label>
+      <label class="theme-toggle-row"><input type="checkbox" id="themeFxHolo">SSRのホロ(虹色)演出</label>
+      <label class="theme-toggle-row"><input type="checkbox" id="themeFxReducedMotion">アニメーション控えめモード</label>
+    </div>
+
+    <div class="theme-preview" id="themePreview">
+      <div class="pack" id="themePreviewPack">
+        <div class="pack-content">
+          <div class="pack-shine"></div>
+          <div class="pack-star">✦</div>
+          <p class="pack-label">TAP TO OPEN</p>
+        </div>
+        <div class="pack-half pack-left"></div>
+        <div class="pack-half pack-right"></div>
+      </div>
+      <div class="burst" id="themePreviewBurst"></div>
+      <div class="theme-preview-card-wrap">
+        <select id="themePreviewRarity" class="theme-preview-rarity-select"></select>
+        <div class="seal-card enter revealed flipped" id="themePreviewCard">
+          <div class="seal-card-inner">
+            <div class="seal-card-face seal-card-front">
+              <div class="seal-card-image" id="themePreviewImage">
+                <span class="seal-card-badge" id="themePreviewBadge">N</span>
+              </div>
+              <div class="seal-card-name">サンプル</div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn secondary" id="themePreviewPlayBtn">演出を再生</button>
+      </div>
+    </div>
+
+    <div class="form-actions theme-actions">
+      <button type="button" class="btn" id="themeSaveBtn">保存する</button>
+      <button type="button" class="btn secondary" id="themeResetBtn">デフォルトに戻す</button>
+      <button type="button" class="btn secondary" id="themeExportBtn">テーマを書き出す (theme.json)</button>
+    </div>
+  </section>
+
+  <section class="admin-panel">
     <h2 class="admin-heading">データ管理</h2>
     <p class="field-hint">
       ここでの編集はこのブラウザ内(IndexedDB)にのみ保存され、公開サイトには自動反映されません。<br>
@@ -87,6 +150,7 @@
 
 <script src="js/db.js"></script>
 <script src="js/rarity.js"></script>
+<script src="js/theme.js"></script>
 <script src="js/catalog.js"></script>
 <script src="js/seedData.js"></script>
 <script src="js/admin.js"></script>

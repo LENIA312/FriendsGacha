@@ -6,7 +6,7 @@
  */
 (function (global) {
   const DB_NAME = 'seal-gacha-db';
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
 
   let dbPromise = null;
 
@@ -22,6 +22,9 @@
         }
         if (!db.objectStoreNames.contains('collection')) {
           db.createObjectStore('collection', { keyPath: 'itemId' });
+        }
+        if (!db.objectStoreNames.contains('settings')) {
+          db.createObjectStore('settings');
         }
       };
       req.onsuccess = (e) => resolve(e.target.result);
@@ -101,5 +104,16 @@
     },
   };
 
-  global.GachaDB = { ItemsStore, CollectionStore, openDb };
+  const SettingsStore = {
+    async get(key) {
+      const store = await tx('settings', 'readonly');
+      return reqToPromise(store.get(key));
+    },
+    async put(key, value) {
+      const store = await tx('settings', 'readwrite');
+      return reqToPromise(store.put(value, key));
+    },
+  };
+
+  global.GachaDB = { ItemsStore, CollectionStore, SettingsStore, openDb };
 })(window);
