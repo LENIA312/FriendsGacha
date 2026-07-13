@@ -152,7 +152,7 @@
   }
 
   function spend(amount) {
-    if (state.balance < amount) return false;
+    if (!state || state.balance < amount) return false;
     state.balance -= amount;
     render();
     persistNow();
@@ -160,7 +160,7 @@
   }
 
   function getBalance() {
-    return state.balance;
+    return state ? state.balance : 0;
   }
 
   function renderBadge() {

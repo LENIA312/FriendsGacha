@@ -67,7 +67,11 @@
       tab.addEventListener('click', () => switchView(tab.dataset.view));
     });
 
-    await GachaMame.init();
+    try {
+      await GachaMame.init();
+    } catch (err) {
+      console.error('マメ工房の初期化に失敗しました:', err);
+    }
     GachaPlay.initGacha();
     GachaCollection.initCollection();
     await GachaCollection.render();

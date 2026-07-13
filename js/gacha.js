@@ -32,7 +32,8 @@
 
   function setDrawButtonsVisible(visible) {
     els.drawOneBtn.classList.toggle('hidden', !visible);
-    els.drawTenBtn.classList.toggle('hidden', !visible);
+    // 10連は一旦導線を非表示にしているため、常にhiddenのまま(ロジックは維持)
+    // els.drawTenBtn.classList.toggle('hidden', !visible);
   }
 
   function refreshDrawButtons() {
@@ -88,6 +89,11 @@
       results.push({ item, isNew });
     }
     state.pendingResults = results;
+  }
+
+  async function handleDrawAgainClick() {
+    resetStage();
+    await handleDrawClick(1);
   }
 
   function createCardEl(result) {
@@ -185,7 +191,7 @@
     els.skipBtn.addEventListener('click', () => {
       state.skip = true;
     });
-    els.resetDrawBtn.addEventListener('click', resetStage);
+    els.resetDrawBtn.addEventListener('click', handleDrawAgainClick);
 
     resetStage();
     refreshDrawButtons();

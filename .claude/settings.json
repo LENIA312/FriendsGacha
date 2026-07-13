@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(node verify3.js)",
-      "Bash(node verify4.js)"
+      "Bash(node verify4.js)",
+      "Bash(gh api *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" https://lenia312.github.io/FriendsGacha/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" https://lenia312.github.io/FriendsGacha/js/mame.js)",
+      "Bash(curl -s https://lenia312.github.io/FriendsGacha/js/mame.js)",
+      "Bash(curl -s https://lenia312.github.io/FriendsGacha/index.html)",
+      "Bash(node verify_live.js)",
+      "Bash(py -m http.server 8934)",
+      "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8934/index.html >/dev/null; do sleep 1; done')",
+      "Bash(node verify_redraw.js)"
     ]
   }
 }
