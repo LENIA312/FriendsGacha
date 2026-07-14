@@ -136,6 +136,17 @@ button {
   white-space: nowrap;
 }
 
+.nazo-badge {
+  border: 1px solid var(--rarity-SSR);
+  background: var(--panel);
+  color: var(--text);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
 .help-btn {
   width: 30px;
   height: 30px;
@@ -699,6 +710,43 @@ body.fx-reduced-motion * {
   margin-top: 4px;
   padding: 8px 18px;
   font-size: 0.82rem;
+}
+
+.upgrade-card.maxed {
+  border-color: var(--rarity-SSR);
+}
+
+.upgrade-card.maxed .upgrade-cost {
+  color: var(--rarity-SSR);
+  font-weight: 800;
+}
+
+.nazo-exchange {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border: 1px solid var(--rarity-SSR);
+  background: var(--panel);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+}
+
+.nazo-exchange-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nazo-exchange-rate {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.nazo-btn {
+  background: linear-gradient(90deg, #c084fc, #ffd54f);
 }
 
 .mame-toast-host {

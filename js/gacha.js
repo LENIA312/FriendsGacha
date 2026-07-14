@@ -10,6 +10,8 @@
   };
 
   const DRAW_COST = { 1: 5, 10: 50 };
+  const NAZO_DRAW_COST = 10;
+  const NAZO_WEIGHTS = { R: 70, SR: 25, SSR: 5 };
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, state.skip ? Math.min(ms, 16) : ms));
@@ -30,8 +32,22 @@
     return picks;
   }
 
+  // ナゾマメガチャ: R以上確定、R/SR/SSRのみの専用オッズで抽選する。
+  function drawNazoItem(catalog) {
+    const byRarity = {};
+    catalog.forEach((item) => {
+      if (NAZO_WEIGHTS[item.rarity]) (byRarity[item.rarity] = byRarity[item.rarity] || []).push(item);
+    });
+    const availableRarities = Object.keys(byRarity);
+    const rarity = GachaRarity.pickWeighted(availableRarities, NAZO_WEIGHTS);
+    if (!rarity) return null;
+    const pool = byRarity[rarity];
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
   function setDrawButtonsVisible(visible) {
     els.drawOneBtn.classList.toggle('hidden', !visible);
+    els.drawNazoBtn.classList.toggle('hidden', !visible);
     // 10連は一旦導線を非表示にしているため、常にhiddenのまま(ロジックは維持)
     // els.drawTenBtn.classList.toggle('hidden', !visible);
   }
@@ -40,10 +56,13 @@
     if (!els.drawOneBtn) return;
     els.drawOneBtn.textContent = `引く (🫘${DRAW_COST[1]})`;
     els.drawTenBtn.textContent = `10連引く (🫘${DRAW_COST[10]})`;
+    els.drawNazoBtn.textContent = `ナゾマメで引く (🔮${NAZO_DRAW_COST})`;
     if (state.busy) return;
     const balance = global.GachaMame ? global.GachaMame.getBalance() : Infinity;
+    const nazoBalance = global.GachaMame ? global.GachaMame.getNazoBalance() : Infinity;
     els.drawOneBtn.disabled = balance < DRAW_COST[1];
     els.drawTenBtn.disabled = balance < DRAW_COST[10];
+    els.drawNazoBtn.disabled = nazoBalance < NAZO_DRAW_COST;
   }
 
   function resetStage() {
@@ -79,6 +98,7 @@
       return;
     }
     state.busy = true;
+    state.lastDrawType = 'normal';
     setDrawButtonsVisible(false);
     els.hint.textContent = 'パックをタップして開封しよう';
 
@@ -91,9 +111,40 @@
     state.pendingResults = results;
   }
 
+  async function handleNazoDrawClick() {
+    if (state.busy) return;
+    let catalog;
+    try {
+      catalog = await GachaCatalog.loadCatalog();
+    } catch (err) {
+      alert('カタログの読み込みに失敗しました: ' + err.message);
+      return;
+    }
+    const item = drawNazoItem(catalog);
+    if (!item) {
+      alert('R以上のイラストがまだ登録されていません。');
+      return;
+    }
+    if (!global.GachaMame || !global.GachaMame.spendNazo(NAZO_DRAW_COST)) {
+      alert('ナゾマメが足りません。マメ工房で交換しよう。');
+      return;
+    }
+    state.busy = true;
+    state.lastDrawType = 'nazo';
+    setDrawButtonsVisible(false);
+    els.hint.textContent = 'パックをタップして開封しよう';
+
+    const isNew = await GachaDB.CollectionStore.recordObtain(item.id);
+    state.pendingResults = [{ item, isNew }];
+  }
+
   async function handleDrawAgainClick() {
     resetStage();
-    await handleDrawClick(1);
+    if (state.lastDrawType === 'nazo') {
+      await handleNazoDrawClick();
+    } else {
+      await handleDrawClick(1);
+    }
   }
 
   function createCardEl(result) {
@@ -179,12 +230,14 @@
     els.cardsArea = document.getElementById('cardsArea');
     els.drawOneBtn = document.getElementById('drawOneBtn');
     els.drawTenBtn = document.getElementById('drawTenBtn');
+    els.drawNazoBtn = document.getElementById('drawNazoBtn');
     els.skipBtn = document.getElementById('skipBtn');
     els.resetDrawBtn = document.getElementById('resetDrawBtn');
     els.hint = document.querySelector('.gacha-hint');
 
     els.drawOneBtn.addEventListener('click', () => handleDrawClick(1));
     els.drawTenBtn.addEventListener('click', () => handleDrawClick(10));
+    els.drawNazoBtn.addEventListener('click', handleNazoDrawClick);
     els.pack.addEventListener('click', () => {
       if (state.pendingResults) playOpenSequence();
     });

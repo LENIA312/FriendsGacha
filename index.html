@@ -14,6 +14,7 @@
     <h1 class="app-title">みんなのイラストガチャ</h1>
   </div>
   <div class="mame-badge" id="mameBadge">🫘 0</div>
+  <div class="nazo-badge" id="nazoBadgeHeader">🔮 0</div>
   <button class="help-btn" id="helpBtn" aria-label="遊び方" title="遊び方">？</button>
   <nav class="app-nav">
     <button class="nav-tab active" data-view="gacha-view">ガチャ</button>
@@ -44,6 +45,7 @@
     <div class="gacha-controls">
       <button class="btn" id="drawOneBtn">引く</button>
       <button class="btn secondary hidden" id="drawTenBtn">10連引く</button>
+      <button class="btn nazo-btn" id="drawNazoBtn">ナゾマメで引く</button>
       <button class="btn secondary hidden" id="skipBtn">スキップ</button>
       <button class="btn hidden" id="resetDrawBtn">もう一度引く</button>
     </div>
@@ -54,6 +56,13 @@
     <div class="mame-workshop">
       <div class="production-lines" id="mameLines"></div>
       <div class="upgrade-grid" id="mameUpgrades"></div>
+      <div class="nazo-exchange">
+        <div class="nazo-exchange-info">
+          <span class="nazo-badge" id="nazoBadgeWorkshop">🔮 0</span>
+          <span class="nazo-exchange-rate">100万マメ → 🔮1個に交換</span>
+        </div>
+        <button class="btn secondary" id="nazoExchangeBtn">交換する</button>
+      </div>
     </div>
     <div class="mame-toast-host" id="mameToastHost"></div>
   </section>
@@ -107,6 +116,10 @@
       <div class="howto-section">
         <h4>🫘 マメの製造</h4>
         <p>「マメ工房」タブでは時間経過で自動的にマメが貯まる。タップすると生産を早められて、アップグレードでもっと効率よく貯められるようになる。</p>
+      </div>
+      <div class="howto-section">
+        <h4>🔮 ナゾマメガチャ</h4>
+        <p>マメ工房で100万マメを貯めると、ナゾマメ1個に交換できる。ナゾマメ10個でR以上確定の特別なガチャが引ける。</p>
       </div>
       <div class="howto-section">
         <h4>📚 コレクション</h4>

@@ -30,5 +30,19 @@
     return pool[pool.length - 1];
   }
 
-  global.GachaRarity = { RARITY, RARITY_ORDER, info, pickRarity };
+  // Weighted random pick from an arbitrary {rarityKey: weight} map (e.g. the ナゾマメガチャ's
+  // R/SR/SSR-only odds), restricted to the rarities actually present in `availableRarities`.
+  function pickWeighted(availableRarities, weightMap) {
+    const pool = availableRarities.filter((r) => weightMap[r] > 0);
+    if (pool.length === 0) return null;
+    const totalWeight = pool.reduce((sum, r) => sum + weightMap[r], 0);
+    let roll = Math.random() * totalWeight;
+    for (const r of pool) {
+      roll -= weightMap[r];
+      if (roll <= 0) return r;
+    }
+    return pool[pool.length - 1];
+  }
+
+  global.GachaRarity = { RARITY, RARITY_ORDER, info, pickRarity, pickWeighted };
 })(window);

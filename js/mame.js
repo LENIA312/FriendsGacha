@@ -10,15 +10,25 @@
   const SAVE_DEBOUNCE_MS = 2000;
 
   const BASE_INTERVAL_MS = 5000;
-  const SPEED_FACTOR = 0.85; // each speedLevel: interval *= 0.85
-  const AMOUNT_TABLE = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+  const MIN_INTERVAL_MS = 100; // 製造速度Lv上限付近での最短生産間隔(0.1秒)
+  const SPEED_FACTOR = 0.85; // each speedLevel: interval *= 0.85 (下限はMIN_INTERVAL_MSでクランプ)
+  const AMOUNT_TABLE = [
+    1, 2, 5, 10, 20, 50, 100, 200, 500, 1000,
+    2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000, 512000, 1000000,
+  ];
   const CRIT_CHANCE = 0.05;
   const CRIT_MULT = 3;
+  const MAME_CAP = 999999999;
+  const NAZO_CAP = 9999;
+  const MAME_TO_NAZO_RATE = 1000000;
+
+  // Lvの上限。amount/tapは表の最終値・最終倍率(docs/Balance.md)にちょうど到達するレベルで打ち止め。
+  const MAX_LEVEL = { speed: 50, amount: AMOUNT_TABLE.length - 1, line: 19, tap: 9 };
 
   const UPGRADES = {
-    speed: { base: 15, growth: 1.5, label: '製造速度' },
+    speed: { base: 15, growth: 1.35, label: '製造速度' },
     amount: { base: 25, growth: 2, label: '一度に生産する量' },
-    line: { base: 150, growth: 3, label: '並列生産ライン' },
+    line: { base: 150, growth: 2, label: '並列生産ライン' },
     tap: { base: 20, growth: 1.8, label: 'タップの効果' },
   };
 
@@ -30,6 +40,7 @@
   function defaultState() {
     return {
       balance: 0,
+      nazoMame: 0,
       lastTick: Date.now(),
       lines: [{ progressMs: 0 }],
       upgrades: { speedLevel: 0, amountLevel: 0, lineLevel: 0, tapLevel: 0 },
@@ -45,6 +56,7 @@
     while (lines.length < lineCount) lines.push({ progressMs: 0 });
     return {
       balance: typeof s.balance === 'number' ? s.balance : 0,
+      nazoMame: typeof s.nazoMame === 'number' ? s.nazoMame : 0,
       lastTick: typeof s.lastTick === 'number' ? s.lastTick : Date.now(),
       lines,
       upgrades,
@@ -52,7 +64,7 @@
   }
 
   function intervalMs() {
-    return BASE_INTERVAL_MS * Math.pow(SPEED_FACTOR, state.upgrades.speedLevel);
+    return Math.max(MIN_INTERVAL_MS, BASE_INTERVAL_MS * Math.pow(SPEED_FACTOR, state.upgrades.speedLevel));
   }
 
   function amountPerCompletion() {
@@ -72,6 +84,10 @@
     return Math.ceil(cfg.base * Math.pow(cfg.growth, level));
   }
 
+  function isMaxed(type) {
+    return state.upgrades[type + 'Level'] >= MAX_LEVEL[type];
+  }
+
   function fmt(n) {
     return Math.floor(n).toLocaleString('ja-JP');
   }
@@ -86,11 +102,11 @@
     await GachaDB.SettingsStore.put(STORAGE_KEY, state);
   }
 
-  function showCriticalToast() {
+  function showToast(text) {
     if (!els.toastHost) return;
     const toast = document.createElement('div');
     toast.className = 'mame-toast';
-    toast.textContent = `✨ Critical! +${fmt(amountPerCompletion() * (CRIT_MULT - 1))}`;
+    toast.textContent = text;
     els.toastHost.appendChild(toast);
     setTimeout(() => toast.remove(), 1400);
   }
@@ -102,12 +118,13 @@
     line.progressMs += deltaMs;
     while (line.progressMs >= interval) {
       line.progressMs -= interval;
-      let amount = amountPerCompletion();
+      const baseAmount = amountPerCompletion();
+      let amount = baseAmount;
       if (allowCrit && Math.random() < CRIT_CHANCE) {
         amount *= CRIT_MULT;
-        showCriticalToast();
+        showToast(`✨ Critical! +${fmt(amount - baseAmount)}`);
       }
-      state.balance += amount;
+      state.balance = Math.min(MAME_CAP, state.balance + amount);
     }
   }
 
@@ -140,6 +157,7 @@
   }
 
   function buyUpgrade(type) {
+    if (isMaxed(type)) return;
     const cost = upgradeCost(type);
     if (state.balance < cost) return;
     state.balance -= cost;
@@ -159,12 +177,42 @@
     return true;
   }
 
+  function spendNazo(amount) {
+    if (!state || state.nazoMame < amount) return false;
+    state.nazoMame -= amount;
+    render();
+    persistNow();
+    return true;
+  }
+
+  function exchangeNazo() {
+    if (!state || state.balance < MAME_TO_NAZO_RATE || state.nazoMame >= NAZO_CAP) return false;
+    state.balance -= MAME_TO_NAZO_RATE;
+    state.nazoMame = Math.min(NAZO_CAP, state.nazoMame + 1);
+    showToast('🔮 ナゾマメ +1');
+    render();
+    persistNow();
+    return true;
+  }
+
   function getBalance() {
     return state ? state.balance : 0;
   }
 
+  function getNazoBalance() {
+    return state ? state.nazoMame : 0;
+  }
+
   function renderBadge() {
     if (els.badge) els.badge.textContent = `🫘 ${fmt(state.balance)}`;
+    const nazoText = `🔮 ${fmt(state.nazoMame)}`;
+    if (els.nazoBadgeHeader) els.nazoBadgeHeader.textContent = nazoText;
+    if (els.nazoBadgeWorkshop) els.nazoBadgeWorkshop.textContent = nazoText;
+  }
+
+  function renderExchange() {
+    if (!els.exchangeBtn) return;
+    els.exchangeBtn.disabled = state.balance < MAME_TO_NAZO_RATE || state.nazoMame >= NAZO_CAP;
   }
 
   function renderLines() {
@@ -195,13 +243,20 @@
   function renderUpgrades() {
     if (!els.upgrades) return;
     Object.keys(UPGRADES).forEach((type) => {
-      const cost = upgradeCost(type);
       const level = state.upgrades[type + 'Level'];
       const card = els.upgrades.querySelector(`[data-upgrade="${type}"]`);
       if (!card) return;
       card.querySelector('.upgrade-level').textContent = `Lv.${level}`;
-      card.querySelector('.upgrade-cost').textContent = `🫘 ${fmt(cost)}`;
-      card.querySelector('button').disabled = state.balance < cost;
+      const maxed = isMaxed(type);
+      card.classList.toggle('maxed', maxed);
+      if (maxed) {
+        card.querySelector('.upgrade-cost').textContent = 'MAX';
+        card.querySelector('button').disabled = true;
+      } else {
+        const cost = upgradeCost(type);
+        card.querySelector('.upgrade-cost').textContent = `🫘 ${fmt(cost)}`;
+        card.querySelector('button').disabled = state.balance < cost;
+      }
     });
   }
 
@@ -209,6 +264,7 @@
     renderBadge();
     renderLines();
     renderUpgrades();
+    renderExchange();
     if (global.GachaPlay && global.GachaPlay.refreshDrawButtons) {
       global.GachaPlay.refreshDrawButtons();
     }
@@ -238,9 +294,15 @@
     els.lines = document.getElementById('mameLines');
     els.upgrades = document.getElementById('mameUpgrades');
     els.toastHost = document.getElementById('mameToastHost');
+    els.nazoBadgeHeader = document.getElementById('nazoBadgeHeader');
+    els.nazoBadgeWorkshop = document.getElementById('nazoBadgeWorkshop');
+    els.exchangeBtn = document.getElementById('nazoExchangeBtn');
 
     if (els.upgrades) {
       Object.keys(UPGRADES).forEach((type) => els.upgrades.appendChild(buildUpgradeCard(type)));
+    }
+    if (els.exchangeBtn) {
+      els.exchangeBtn.addEventListener('click', exchangeNazo);
     }
 
     window.addEventListener('beforeunload', persistNow);
@@ -249,5 +311,5 @@
     tickTimer = setInterval(tick, TICK_MS);
   }
 
-  global.GachaMame = { init, getBalance, spend, fmt };
+  global.GachaMame = { init, getBalance, spend, getNazoBalance, spendNazo, fmt };
 })(window);
