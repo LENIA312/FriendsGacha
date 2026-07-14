@@ -46,7 +46,9 @@
       "Bash(py -m http.server 8947)",
       "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8947/index.html >/dev/null; do sleep 1; done')",
       "Bash(py -m http.server 8948)",
-      "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8948/index.html >/dev/null; do sleep 1; done')"
+      "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8948/index.html >/dev/null; do sleep 1; done')",
+      "Bash(py -m http.server 8949)",
+      "Bash(timeout 20 bash -c 'until curl -sf http://localhost:8949/index.html >/dev/null; do sleep 1; done')"
     ]
   }
 }

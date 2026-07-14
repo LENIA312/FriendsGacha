@@ -22,13 +22,14 @@
 
 * {
   box-sizing: border-box;
+  /* iOS Safari は祖先要素だけのtouch-actionを無視することがあるため、全要素に直接指定する */
+  touch-action: manipulation;
 }
 
 html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  touch-action: manipulation; /* スマホでの連打(パック/生産ラインタップ等)がダブルタップズームにならないように */
 }
 
 body {
