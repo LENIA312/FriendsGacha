@@ -446,7 +446,7 @@ main {
 .seal-card-image {
   flex: 1;
   background-color: #fff;
-  background-size: 100% auto;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
@@ -907,7 +907,7 @@ body.fx-reduced-motion * {
   position: absolute;
   inset: 0;
   background-color: #fff;
-  background-size: 100% auto;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -1012,7 +1012,7 @@ body.fx-reduced-motion * {
   width: 100%;
   aspect-ratio: 1 / 1;
   background-color: #fff;
-  background-size: 100% auto;
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
 }
