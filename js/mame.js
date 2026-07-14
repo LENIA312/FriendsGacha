@@ -47,16 +47,22 @@
     };
   }
 
+  // Clamps values that predate a balance-tightening update (e.g. levels bought back when there
+  // was no cap yet, or a マメ total from before MAME_CAP existed) down to the current limits.
   function mergeState(saved) {
     const s = saved && typeof saved === 'object' ? saved : {};
     const base = defaultState();
     const upgrades = { ...base.upgrades, ...(s.upgrades || {}) };
+    Object.keys(MAX_LEVEL).forEach((type) => {
+      const key = type + 'Level';
+      if (upgrades[key] > MAX_LEVEL[type]) upgrades[key] = MAX_LEVEL[type];
+    });
     const lineCount = 1 + upgrades.lineLevel;
     const lines = Array.isArray(s.lines) && s.lines.length ? s.lines.slice(0, lineCount) : [];
     while (lines.length < lineCount) lines.push({ progressMs: 0 });
     return {
-      balance: typeof s.balance === 'number' ? s.balance : 0,
-      nazoMame: typeof s.nazoMame === 'number' ? s.nazoMame : 0,
+      balance: typeof s.balance === 'number' ? Math.min(MAME_CAP, s.balance) : 0,
+      nazoMame: typeof s.nazoMame === 'number' ? Math.min(NAZO_CAP, s.nazoMame) : 0,
       lastTick: typeof s.lastTick === 'number' ? s.lastTick : Date.now(),
       lines,
       upgrades,
