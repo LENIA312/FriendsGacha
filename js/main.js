@@ -99,6 +99,40 @@
     }
   }
 
+  function initReleaseNoteModal() {
+    els.releaseNoteModal = document.getElementById('releaseNoteModal');
+    document.getElementById('releaseNoteClose').addEventListener('click', () => {
+      els.releaseNoteModal.classList.add('hidden');
+    });
+    els.releaseNoteModal.addEventListener('click', (e) => {
+      if (e.target === els.releaseNoteModal) els.releaseNoteModal.classList.add('hidden');
+    });
+  }
+
+  // Shows data/releasenote.json's content once per "version" to returning players (first-time
+  // visitors get the how-to-play tutorial instead, and just have this version recorded silently).
+  // To make the note reappear for everyone, bump "version" in data/releasenote.json before
+  // publishing a new one — see docs/SPEC.md for the exact steps.
+  async function checkReleaseNote(hadSeenTutorial) {
+    let note;
+    try {
+      const res = await fetch('data/releasenote.json', { cache: 'no-cache' });
+      note = res.ok ? await res.json() : null;
+    } catch (err) {
+      note = null;
+    }
+    if (!note || typeof note.version === 'undefined') return;
+
+    const seenVersion = await GachaDB.SettingsStore.get('checkRereleaseNote');
+    if (seenVersion === note.version) return;
+    await GachaDB.SettingsStore.put('checkRereleaseNote', note.version);
+    if (!hadSeenTutorial) return;
+
+    document.getElementById('releaseNoteTitle').textContent = note.title || '更新のお知らせ';
+    document.getElementById('releaseNoteText').textContent = note.txt || '';
+    els.releaseNoteModal.classList.remove('hidden');
+  }
+
   let collectionRefreshTimer = null;
   function refreshCollectionSoon() {
     clearTimeout(collectionRefreshTimer);
@@ -128,6 +162,7 @@
     const hadSeenTutorial = !!(await GachaDB.SettingsStore.get('howToPlaySeen'));
     await initHowToPlay(hadSeenTutorial);
     initNewItemsModal();
+    initReleaseNoteModal();
 
     try {
       await GachaMame.init();
@@ -138,6 +173,7 @@
     GachaCollection.initCollection();
     await GachaCollection.render();
     await checkNewItems(hadSeenTutorial);
+    await checkReleaseNote(hadSeenTutorial);
   }
 
   global.GachaMain = { openItemModal, refreshCollectionSoon };

@@ -1003,6 +1003,7 @@ body.fx-reduced-motion * {
   color: var(--text);
   border-top: 1px solid var(--border);
   padding-top: 12px;
+  white-space: pre-line;
 }
 
 .modal-owned-count {
