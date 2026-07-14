@@ -758,6 +758,50 @@ body.fx-reduced-motion * {
   background: linear-gradient(90deg, #c084fc, #ffd54f);
 }
 
+.nazo-btn.coming-soon {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.nazo-btn-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.nazo-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 10, 35, 0.95);
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid var(--rarity-SSR);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 5;
+}
+
+.nazo-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(20, 10, 35, 0.95);
+}
+
+.nazo-tooltip.show {
+  opacity: 1;
+}
+
 .mame-toast-host {
   position: fixed;
   top: 80px;

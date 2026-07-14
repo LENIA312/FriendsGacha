@@ -16,8 +16,6 @@
     1, 2, 5, 10, 20, 50, 100, 200, 500, 1000,
     2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000, 512000, 1000000,
   ];
-  const CRIT_CHANCE = 0.05;
-  const CRIT_MULT = 3;
   const MAME_CAP = 999999999;
   const NAZO_CAP = 9999;
   const MAME_TO_NAZO_RATE = 100000000;
@@ -122,23 +120,16 @@
   }
 
   // Advances a single line by `deltaMs`, crediting completions to balance.
-  // `allowCrit` is false for offline catch-up so reloading the page can't be used to farm crit rolls.
   // Production pauses entirely once the マメ cap is hit (progress freezes rather than being wasted),
   // and resumes on its own the next time balance drops below the cap (e.g. spending on a draw/upgrade).
-  function advanceLine(line, deltaMs, allowCrit) {
+  function advanceLine(line, deltaMs) {
     if (isFull()) return;
     const interval = intervalMs();
     line.progressMs += deltaMs;
     while (line.progressMs >= interval) {
       if (isFull()) break;
       line.progressMs -= interval;
-      const baseAmount = amountPerCompletion();
-      let amount = baseAmount;
-      if (allowCrit && Math.random() < CRIT_CHANCE) {
-        amount *= CRIT_MULT;
-        showToast(`✨ Critical! +${fmt(amount - baseAmount)}`);
-      }
-      state.balance = Math.min(MAME_CAP, state.balance + amount);
+      state.balance = Math.min(MAME_CAP, state.balance + amountPerCompletion());
     }
   }
 
@@ -146,7 +137,7 @@
     const now = Date.now();
     const elapsed = Math.max(0, now - state.lastTick);
     if (elapsed > 0) {
-      state.lines.forEach((line) => advanceLine(line, elapsed, false));
+      state.lines.forEach((line) => advanceLine(line, elapsed));
     }
     state.lastTick = now;
   }
@@ -155,7 +146,7 @@
     const now = Date.now();
     const delta = now - state.lastTick;
     state.lastTick = now;
-    state.lines.forEach((line) => advanceLine(line, delta, true));
+    state.lines.forEach((line) => advanceLine(line, delta));
     render();
     schedulePersist();
   }

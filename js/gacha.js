@@ -12,6 +12,7 @@
   const DRAW_COST = { 1: 5, 10: 50 };
   const NAZO_DRAW_COST = 10;
   const NAZO_WEIGHTS = { R: 70, SR: 25, SSR: 5 };
+  const NAZO_GACHA_ENABLED = false; // 一旦無効化中。再開する際はtrueに戻すだけでよい
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, state.skip ? Math.min(ms, 16) : ms));
@@ -57,12 +58,23 @@
     els.drawOneBtn.textContent = `引く (🫘${DRAW_COST[1]})`;
     els.drawTenBtn.textContent = `10連引く (🫘${DRAW_COST[10]})`;
     els.drawNazoBtn.textContent = `ナゾマメで引く (🔮${NAZO_DRAW_COST})`;
+    els.drawNazoBtn.classList.toggle('coming-soon', !NAZO_GACHA_ENABLED);
     if (state.busy) return;
     const balance = global.GachaMame ? global.GachaMame.getBalance() : Infinity;
     const nazoBalance = global.GachaMame ? global.GachaMame.getNazoBalance() : Infinity;
     els.drawOneBtn.disabled = balance < DRAW_COST[1];
     els.drawTenBtn.disabled = balance < DRAW_COST[10];
-    els.drawNazoBtn.disabled = nazoBalance < NAZO_DRAW_COST;
+    // While disabled-by-feature-flag, keep the button natively enabled (not `disabled`) so it can
+    // still receive a click and show the "解放までお待ちください" tooltip below.
+    els.drawNazoBtn.disabled = NAZO_GACHA_ENABLED && nazoBalance < NAZO_DRAW_COST;
+  }
+
+  let nazoTooltipTimer = null;
+  function showNazoTooltip() {
+    if (!els.nazoTooltip) return;
+    els.nazoTooltip.classList.add('show');
+    clearTimeout(nazoTooltipTimer);
+    nazoTooltipTimer = setTimeout(() => els.nazoTooltip.classList.remove('show'), 2000);
   }
 
   function resetStage() {
@@ -112,6 +124,10 @@
   }
 
   async function handleNazoDrawClick() {
+    if (!NAZO_GACHA_ENABLED) {
+      showNazoTooltip();
+      return;
+    }
     if (state.busy) return;
     let catalog;
     try {
@@ -231,6 +247,7 @@
     els.drawOneBtn = document.getElementById('drawOneBtn');
     els.drawTenBtn = document.getElementById('drawTenBtn');
     els.drawNazoBtn = document.getElementById('drawNazoBtn');
+    els.nazoTooltip = document.getElementById('nazoTooltip');
     els.skipBtn = document.getElementById('skipBtn');
     els.resetDrawBtn = document.getElementById('resetDrawBtn');
     els.hint = document.querySelector('.gacha-hint');
