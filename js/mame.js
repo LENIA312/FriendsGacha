@@ -20,7 +20,7 @@
   const CRIT_MULT = 3;
   const MAME_CAP = 999999999;
   const NAZO_CAP = 9999;
-  const MAME_TO_NAZO_RATE = 1000000;
+  const MAME_TO_NAZO_RATE = 100000000;
 
   // Lvの上限。amount/tapは表の最終値・最終倍率(docs/Balance.md)にちょうど到達するレベルで打ち止め。
   const MAX_LEVEL = { speed: 50, amount: AMOUNT_TABLE.length - 1, line: 19, tap: 9 };
