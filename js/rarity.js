@@ -7,10 +7,10 @@
   const RARITY_ORDER = ['N', 'R', 'SR', 'SSR'];
 
   const RARITY = {
-    N: { key: 'N', name: 'ノーマル', weight: 60, order: 1, color: '#9aa0a6', glow: 'none' },
-    R: { key: 'R', name: 'レア', weight: 30, order: 2, color: '#4fc3f7', glow: 'soft' },
-    SR: { key: 'SR', name: 'スーパーレア', weight: 8, order: 3, color: '#c084fc', glow: 'strong' },
-    SSR: { key: 'SSR', name: 'スーパースペシャルレア', weight: 2, order: 4, color: '#ffd54f', glow: 'holo' },
+    N: { key: 'N', name: 'ノーマル', weight: 80, order: 1, color: '#9aa0a6', glow: 'none' },
+    R: { key: 'R', name: 'レア', weight: 18, order: 2, color: '#4fc3f7', glow: 'soft' },
+    SR: { key: 'SR', name: 'スーパーレア', weight: 1.8, order: 3, color: '#c084fc', glow: 'strong' },
+    SSR: { key: 'SSR', name: 'スーパースペシャルレア', weight: 0.2, order: 4, color: '#ffd54f', glow: 'holo' },
   };
 
   function info(key) {
