@@ -68,6 +68,15 @@ button {
   background: rgba(18, 10, 32, 0.6);
 }
 
+.app-header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: auto;
+}
+
 .app-title-group {
   display: flex;
   flex-direction: column;

@@ -13,14 +13,16 @@
     <p class="app-presents">えだまめプレゼンツ</p>
     <h1 class="app-title">みんなのイラストガチャ</h1>
   </div>
-  <div class="mame-badge" id="mameBadge">🫘 0</div>
-  <div class="nazo-badge" id="nazoBadgeHeader">🔮 0</div>
-  <button class="help-btn" id="helpBtn" aria-label="遊び方" title="遊び方">？</button>
-  <nav class="app-nav">
-    <button class="nav-tab active" data-view="gacha-view">ガチャ</button>
-    <button class="nav-tab" data-view="mame-view">マメ工房</button>
-    <button class="nav-tab" data-view="collection-view">コレクション</button>
-  </nav>
+  <div class="app-header-right">
+    <div class="mame-badge" id="mameBadge">🫘 0</div>
+    <div class="nazo-badge" id="nazoBadgeHeader">🔮 0</div>
+    <button class="help-btn" id="helpBtn" aria-label="遊び方" title="遊び方">？</button>
+    <nav class="app-nav">
+      <button class="nav-tab active" data-view="gacha-view">ガチャ</button>
+      <button class="nav-tab" data-view="mame-view">マメ工房</button>
+      <button class="nav-tab" data-view="collection-view">コレクション</button>
+    </nav>
+  </div>
 </header>
 
 <main>
@@ -52,7 +54,7 @@
   </section>
 
   <section id="mame-view" class="view">
-    <p class="gacha-hint">タップして製造を早めよう</p>
+    <p class="gacha-hint" id="mameHint">タップして製造を早めよう</p>
     <div class="mame-workshop">
       <div class="production-lines" id="mameLines"></div>
       <div class="upgrade-grid" id="mameUpgrades"></div>

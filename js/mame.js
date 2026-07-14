@@ -111,12 +111,20 @@
     setTimeout(() => toast.remove(), 1400);
   }
 
+  function isFull() {
+    return state.balance >= MAME_CAP;
+  }
+
   // Advances a single line by `deltaMs`, crediting completions to balance.
   // `allowCrit` is false for offline catch-up so reloading the page can't be used to farm crit rolls.
+  // Production pauses entirely once the マメ cap is hit (progress freezes rather than being wasted),
+  // and resumes on its own the next time balance drops below the cap (e.g. spending on a draw/upgrade).
   function advanceLine(line, deltaMs, allowCrit) {
+    if (isFull()) return;
     const interval = intervalMs();
     line.progressMs += deltaMs;
     while (line.progressMs >= interval) {
+      if (isFull()) break;
       line.progressMs -= interval;
       const baseAmount = amountPerCompletion();
       let amount = baseAmount;
@@ -215,6 +223,13 @@
     els.exchangeBtn.disabled = state.balance < MAME_TO_NAZO_RATE || state.nazoMame >= NAZO_CAP;
   }
 
+  function renderHint() {
+    if (!els.hint) return;
+    els.hint.textContent = isFull()
+      ? 'マメが上限に達したため製造を停止中(使うと再開します)'
+      : 'タップして製造を早めよう';
+  }
+
   function renderLines() {
     if (!els.lines) return;
     const interval = intervalMs();
@@ -265,6 +280,7 @@
     renderLines();
     renderUpgrades();
     renderExchange();
+    renderHint();
     if (global.GachaPlay && global.GachaPlay.refreshDrawButtons) {
       global.GachaPlay.refreshDrawButtons();
     }
@@ -297,6 +313,7 @@
     els.nazoBadgeHeader = document.getElementById('nazoBadgeHeader');
     els.nazoBadgeWorkshop = document.getElementById('nazoBadgeWorkshop');
     els.exchangeBtn = document.getElementById('nazoExchangeBtn');
+    els.hint = document.getElementById('mameHint');
 
     if (els.upgrades) {
       Object.keys(UPGRADES).forEach((type) => els.upgrades.appendChild(buildUpgradeCard(type)));
